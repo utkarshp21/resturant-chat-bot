@@ -16,10 +16,10 @@ export class AppComponent {
   constructor(private chatBotService: ChatbotService){
   }
 
-  getChatResponse():void{
+  getChatResponse(queryMessage:string):void{
     this.chatBotService.getChatResponse().subscribe(data => {
         this.messages.push({
-          query: "Query",
+          query: queryMessage,
           response: data["body"]
         });
     });
