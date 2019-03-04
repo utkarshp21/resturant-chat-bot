@@ -1,0 +1,19 @@
+{
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "lex-chat-bot-20190304020438-authRole",
+            "UnauthRoleArn": "arn:aws:iam::245491298808:role/lex-chat-bot-20190304020438-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::245491298808:role/lex-chat-bot-20190304020438-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "lex-chat-bot-20190304020438-deployment",
+            "UnauthRoleName": "lex-chat-bot-20190304020438-unauthRole",
+            "StackName": "lex-chat-bot-20190304020438",
+            "StackId": "arn:aws:cloudformation:us-east-1:245491298808:stack/lex-chat-bot-20190304020438/c6e61eb0-3e4b-11e9-8afe-0ae8cc519968"
+        },
+        "categories": {
+            "auth": {
+                "cognito2ec254e7": {}
+            }
+        }
+    }
+}
