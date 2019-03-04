@@ -1,40 +1,10 @@
-<!-- <div class="container">
-      <h3 class="text-center">Dining Concierge Chatbot</h3>
-      <div class="mesgs">
-        <div class="msg_history">
-          <div *ngFor="let message of messages">
-            <div class="outgoing_msg">
-              <div class="sent_msg">
-                <p>{{message.query}}</p>
-                <span class="time_date"> 11:01 AM | June 9</span>
-              </div>
-            </div>
-            <div class="incoming_msg">
-              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
-              </div>
-              <div class="received_msg">
-                <div class="received_withd_msg">
-                  <p>{{message.response}}</p>
-                  <span class="time_date"> 11:01 AM | June 9</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="type_msg">
-          <div class="input_msg_write">
-            <input type="text" class="write_msg" placeholder="Type a message" #queryMessage />
-            <button class="msg_send_btn" (click)="getChatResponse(queryMessage.value); queryMessage.value=''" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-          </div>
-        </div>
-      </div>
-</div> -->
+
 <!-- <router-outlet></router-outlet> -->
 
 <nav>
   <a routerLink="/">Home</a>
   <a routerLink="/auth">Auth</a>
-  <a routerLink="/secure">Secure</a>
+  <a routerLink="/chatBot">ChatBot</a>
 </nav>
 
 <router-outlet></router-outlet>
