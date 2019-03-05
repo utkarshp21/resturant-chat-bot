@@ -4,15 +4,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthComponent } from './auth/auth.component';
-import { HomeComponent } from './home/home.component';
 import { AmplifyAngularModule, AmplifyService } from 'aws-amplify-angular';
 import { ChatBotComponent } from './chat-bot/chat-bot.component';
+import { AuthGuard } from './auth-guard.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    HomeComponent,
     ChatBotComponent
   ],
   imports: [
@@ -21,7 +20,7 @@ import { ChatBotComponent } from './chat-bot/chat-bot.component';
     HttpClientModule,
     AmplifyAngularModule
   ],
-  providers: [AmplifyService],
+  providers: [AmplifyService, AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
