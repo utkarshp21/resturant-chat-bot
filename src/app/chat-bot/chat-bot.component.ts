@@ -31,7 +31,7 @@ export class ChatBotComponent {
     });
   }
 
-  private getChatResponse(queryMessage: string): void {
+  getChatResponse(queryMessage: string): void {
     this.chatBotService.getChatResponse().subscribe(data => {
       this.messages.push({
         query: queryMessage,
@@ -40,7 +40,7 @@ export class ChatBotComponent {
     });
   }
 
-  private signOut() {
+  signOut() {
     this.amplifyService.auth().signOut();
     this.router.navigate(['/']);
   }
