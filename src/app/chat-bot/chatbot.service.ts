@@ -8,8 +8,9 @@ export class ChatbotService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getChatResponse() {
-    return this.httpClient.post('https://3o2tard9ia.execute-api.us-east-1.amazonaws.com/beta/v1/chatbot/',{abc:"asds"
+  getChatResponse(userQuery) {
+    return this.httpClient.post('https://3o2tard9ia.execute-api.us-east-1.amazonaws.com/beta/v1/chatbot/', {
+      "userQuery": userQuery
     })
   }
 }
