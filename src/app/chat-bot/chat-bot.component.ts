@@ -31,11 +31,11 @@ export class ChatBotComponent {
     });
   }
 
-  getChatResponse(queryMessage: string): void {
-    this.chatBotService.getChatResponse().subscribe(data => {
+  private getChatResponse(userQuery: string): void {
+    this.chatBotService.getChatResponse(userQuery).subscribe(data => {
       this.messages.push({
-        query: queryMessage,
-        response: data["body"]
+        query: userQuery,
+        response: data["message"]
       });
     });
   }
