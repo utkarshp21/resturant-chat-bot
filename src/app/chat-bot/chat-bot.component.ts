@@ -22,6 +22,7 @@ export class ChatBotComponent {
 
   ngOnInit() {
     Auth.currentSession().then(session => {
+      debugger;
       this.user = {
         username: session.getIdToken().payload["cognito:username"],
         email: session.getIdToken().payload['email'],
@@ -31,7 +32,7 @@ export class ChatBotComponent {
     });
   }
 
-  private getChatResponse(userQuery: string): void {
+  getChatResponse(userQuery: string): void {
     this.chatBotService.getChatResponse(userQuery).subscribe(data => {
       this.messages.push({
         query: userQuery,

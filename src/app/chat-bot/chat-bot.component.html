@@ -1,6 +1,6 @@
 <div class="container">
       <h3 class="text-center">Dining Concierge Chatbot</h3>
-      <div *ngIf="user">
+      <div class="user_info" *ngIf="user">
         <p>{{user.username}}</p>
         <p>{{user.email}}</p>
         <p>{{user.phone_number}}</p>
@@ -30,7 +30,7 @@
         <div class="type_msg">
           <div class="input_msg_write">
             <input type="text" class="write_msg" placeholder="Type a message" #userQuery />
-            <button class="msg_send_btn" (click)="getChatResponse(userQuery.value); userQuery.value=''" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+            <button class="msg_send_btn" (click)="getChatResponse(userQuery.value); userQuery.value=''" type="button">Send</button>
           </div>
         </div>
       </div>
