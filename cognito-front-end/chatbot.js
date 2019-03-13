@@ -2,8 +2,28 @@
 
 
 var container = document.getElementById("msgs_div");
+
+
+var apigClient = apigClientFactory.newClient({
+    accessKey: '',
+    secretKey: '',
+});
+
 var messages = []
 render();
+
+
+function callChatApi(query) {
+    apigClient.v1ChatbotPost({}, query, {})
+        .then(function (result) {
+            let msg = { query: query.userQuery, response: result.data["message"] }
+            messages.push(msg)
+            render();
+        }).catch(function (result) {
+            console.log(result);
+    });
+}
+
 function render(){
     container.innerHTML = "";
     for (var i = 0; i < messages.length; i++) {
@@ -31,21 +51,5 @@ function render(){
 }
 $("#msg_send_btn").click(function(){
     let query = document.getElementById("chatInput").value;
-
-    let data = {"userQuery": query};
-    $.ajax({
-        headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json' 
-        },
-        'type': 'POST',
-        'url': "https://3o2tard9ia.execute-api.us-east-1.amazonaws.com/beta/v1/chatbot/",
-        'data': JSON.stringify(data),
-        'dataType': 'json',
-        'success' : function (data) {
-            let msg = {query:query, response: data["message"]}
-            messages.push(msg)
-            render();
-        }
-    });
-  });
+    callChatApi({ "userQuery": query });
+});
