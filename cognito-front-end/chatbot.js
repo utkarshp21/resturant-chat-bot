@@ -29,3 +29,8 @@ for (var i = 0; i < messages.length; i++) {
     </div>`;
 }
 
+function addMessage(msg){
+    let message = {query : msg,}
+    messages.psuh(message); 
+}
+
