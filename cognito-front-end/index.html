@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="styles.css">
+
+   
+<title>Page Title</title>
+</head>
+<body>
+
+<div class="container">
+      <h3 class="text-center">Dining Concierge Chatbot</h3>
+      <div class="mesgs">
+        <div id="msgs_div" class="msg_history">
+          
+        </div>
+        <div class="type_msg">
+          <div class="input_msg_write">
+            <input type="text" class="write_msg" placeholder="Type a message" #queryMessage />
+            <button class="msg_send_btn" (click)="getChatResponse(queryMessage.value); queryMessage.value=''" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+</div>
+<!-- <router-outlet></router-outlet> -->
+
+</body>
+<script src="chatbot.js"></script>
+</html>
