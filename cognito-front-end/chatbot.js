@@ -84,3 +84,10 @@ $("#msg_send_btn").click(function(){
     let query = document.getElementById("chatInput").value;
     callChatApi({ "userQuery": query });
 });
+
+$("#msg_send_btn").keypress(function(event) {
+    if (event.which == 13) {
+        let query = document.getElementById("chatInput").value;
+        callChatApi({ "userQuery": query });
+     }
+});
