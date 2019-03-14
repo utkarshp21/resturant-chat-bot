@@ -6,7 +6,7 @@ var https = require('https');
 
 function getResturants(params){
     console.log("Inside get Resturants");
-    const token = "";
+    const token = "YftPEyyLHK1F-Vrrc-p5xbSIHzqDN8o6UVD9QkNaL7yi6F60i3_uuK00KCcKBNjX19b1KmiLygLiiLobZPG-x3lekJb3drzwnkuri65Y-gxUj2tYa-A-lZDRoVGIW3Yx";
 
     const options = {
         hostname: 'api.yelp.com',
@@ -59,7 +59,7 @@ module.exports = async function (intentRequest) {
     
     let time = intentRequest.currentIntent.slots.time;
     let date = intentRequest.currentIntent.slots.date;
-    // let peopleCount = intentRequest.currentIntent.slots.peopleCount;
+    let peopleCount = intentRequest.currentIntent.slots.peopleCount;
     let unixDate = new Date(date + ' ' + time).getTime() / 1000
     
     console.log(date,time);

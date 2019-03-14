@@ -18,8 +18,7 @@ module.exports.elicitSlot = function (sessionAttributes, intentName, slots, slot
             intentName,
             slots,
             slotToElicit,
-            message,
-            responseCard: getResponseCard(title, imageUrl, buttons)
+            message
         }
     };
 };
@@ -46,3 +45,16 @@ module.exports.confirmIntent = function (sessionAttributes, intentName, slots, m
         }
     };
 };
+
+function getResponseCard(title, imageUrl, buttons) {
+  return {
+    contentType: 'application/vnd.amazonaws.card.generic',
+    genericAttachments: [
+      {
+        title,
+        imageUrl,
+        buttons
+      }
+    ]
+  };
+}
