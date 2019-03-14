@@ -81,13 +81,18 @@ function render(){
     }
 }
 $("#msg_send_btn").click(function(){
-    let query = document.getElementById("chatInput").value;
-    callChatApi({ "userQuery": query });
+    sendChatInputToApi();
 });
 
 $("#chatInput").keypress(function(event) {
     if (event.which == 13) {
-        let query = document.getElementById("chatInput").value;
-        callChatApi({ "userQuery": query });
+        sendChatInputToApi();
      }
 });
+
+function sendChatInputToApi(){
+    let chatInputBox = document.getElementById("chatInput")
+    let query = chatInputBox.value;
+    chatInputBox.value = "";
+    callChatApi({ "userQuery": query });
+}
