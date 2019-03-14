@@ -1,15 +1,46 @@
 
-
-
 var container = document.getElementById("msgs_div");
 
 
-var apigClient = apigClientFactory.newClient({
-    accessKey: '',
-    secretKey: '',
+function getUrlParameter() {
+    var vars = {};
+    
+    window.location.href.replace(/[?#&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+        vars[key] = value;
+    });
+    
+    return vars;
+};
+
+var id_token = getUrlParameter()["id_token"];
+
+AWS.config.region = 'us-east-1';
+
+
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-east-1:6b9ace6d-64d2-47de-9203-a12256de7ded',
+    Logins: { // optional tokens, used for authenticated login
+        'cognito-idp.us-east-1.amazonaws.com/us-east-1_M2CrGZrVx': id_token
+    }
 });
 
+
+
+AWS.config.credentials.get(function () {
+   
+    AWS.config.region = 'us-east-1';
+    apigClient = apigClientFactory.newClient({
+        accessKey: AWS.config.credentials.accessKeyId,
+        secretKey: AWS.config.credentials.secretAccessKey,
+        sessionToken: AWS.config.credentials.sessionToken, 
+        region: 'us-east-1'
+    });
+
+});
+
+
 var messages = []
+
 render();
 
 

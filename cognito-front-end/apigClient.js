@@ -51,7 +51,7 @@ apigClientFactory.newClient = function (config) {
         config.defaultAcceptType = 'application/json';
     }
 
-    debugger;
+    
     // extract endpoint and path from url
     var invokeUrl = 'https://3o2tard9ia.execute-api.us-east-1.amazonaws.com/beta';
     var endpoint = /(^https?:\/\/[^\/]+)/g.exec(invokeUrl)[1];
