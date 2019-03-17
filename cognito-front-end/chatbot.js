@@ -76,6 +76,9 @@ function render(){
                 </div>
             </div>
         </div>`;
+        var objDiv = document.getElementById("msgs_div");
+        objDiv.scrollTop = objDiv.scrollHeight;
+
     }
 }
 $("#msg_send_btn").click(function(){
