@@ -10,7 +10,7 @@ module.exports.delegate = function (sessionAttributes, slots) {
     };
 };
 
-module.exports.elicitSlot = function (sessionAttributes, intentName, slots, slotToElicit, message, title, imageUrl, buttons) {
+module.exports.elicitSlot = function (sessionAttributes, intentName, slots, slotToElicit, message) {
     return {
         sessionAttributes,
         dialogAction: {
@@ -46,15 +46,3 @@ module.exports.confirmIntent = function (sessionAttributes, intentName, slots, m
     };
 };
 
-function getResponseCard(title, imageUrl, buttons) {
-  return {
-    contentType: 'application/vnd.amazonaws.card.generic',
-    genericAttachments: [
-      {
-        title,
-        imageUrl,
-        buttons
-      }
-    ]
-  };
-}

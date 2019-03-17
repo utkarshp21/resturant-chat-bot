@@ -3,56 +3,46 @@ const lexResponses = require('../lexResponses');
 const _ = require('lodash');
 
 const all_locations = ["Manhattan", "Brooklyn", "Queens"]
-const all_dates = ["Today", "Tomorrow"]
-function buildValidationResult(isValid, violatedSlot, messageContent, options) {
+const all_cuisines = ["Chinese", "American", "Thai"]
+function buildValidationResult(isValid, violatedSlot, messageContent, ) {
   
   if (messageContent == null) {
     return {
       isValid,
-      violatedSlot,
-      options
+      violatedSlot
     };
   }
   return {
     isValid,
     violatedSlot,
     message: { contentType: 'PlainText', content: messageContent },
-    options
   };
 }
 
-function getButtons(options) {
-  var buttons = [];
-  _.forEach(options, option => {
-    buttons.push({
-      text: option,
-      value: option
-    });
-  });
-  return buttons;
-}
 
-function getOptions(title, types) {
-  return {
-    title,
-    buttons: getButtons(types)
-  };
-}
-
-function validateReservation(location, date, time) {
+function validateReservation(location, date, time, peopleCount, cuisine) {
   
-  
-  
-  if(all_locations.indexOf(location) === -1) {
-    const options = getOptions('Select a city', all_locations);
-    return buildValidationResult(false, 'location', 
-    'Please choose from the following locations - Manhattan, Brooklyn, Queens', options);  
+  if(peopleCount && (parseInt(peopleCount) < 1 || parseInt(peopleCount) > 10 )) {
+    return buildValidationResult(false, 'peopleCount', 
+    'We only support reservations for people count from 1-10');  
   }
   
-  if (date && !isFutureDate(date, time)){
-    const options = getOptions('Select a date', all_dates);
-    return buildValidationResult(false, 'date', 
-    'Please choose a future date', options);  
+  if(cuisine && all_cuisines.length > 1 && all_cuisines.indexOf(cuisine) === -1) {
+    return buildValidationResult(false, 'cuisine', 
+    'Please choose from the following cuisine - American, Thai, Chinese');  
+  }
+  
+  if(location && all_locations.indexOf(location) === -1) {
+    return buildValidationResult(false, 'location', 
+    'Please choose from the following locations - Manhattan, Brooklyn, Queens');  
+  }
+  
+  if (date && !isFutureDate(date)){
+    return buildValidationResult(false, 'date', 'Please choose a future date');  
+  }
+  
+  if (time && !isFutureTime(time)){
+    return buildValidationResult(false, 'time', 'Please choose a time two hours from now');  
   }
   return buildValidationResult(true, null, null);
   
@@ -61,15 +51,23 @@ function validateReservation(location, date, time) {
 function isFutureDate(idate, time){
   var today = new Date();
   today.setHours(0,0,0,0);
-  console.log(today);
-  today = today.getTime();
+  console.log("Today Date : " + today.getFullYear() + "-" + today.getMonth()+1 + "-" + today.getDate());
   idate = idate.split("-");
-  
-  idate = new Date(idate[0], idate[1]-1, idate[2]).getTime();
-  console.log("date -" + idate);
-  console.log(today);
-  console.log(today - idate);
-  return (today - idate) <= 0 ? true : false;
+  idate = new Date(idate[0], idate[1]-1, idate[2])
+  console.log("Input Date : " + idate.getFullYear() + "-" + idate.getMonth()+1 + "-" + idate.getDate());
+  return (today.getTime() - idate.getTime()) <= 0 ? true : false;
+}
+
+function isFutureTime(time){
+  var today = new Date();
+  var todayHours = today.getHours() - 4;
+  var todayMinutes = today.getMinutes();
+  console.log("Today time : " + todayHours + " " + todayMinutes)
+  time = time.split(":");
+  var hr= parseInt(time[0]);
+  var min= parseInt(time[1]);
+  console.log("Input time : " + hr + " " + min)
+  return todayHours*60 + todayMinutes + 120 < hr *60 + min;
 }
 
 module.exports = function (intentRequest) {
@@ -82,38 +80,22 @@ module.exports = function (intentRequest) {
     var peopleCount = intentRequest.currentIntent.slots.peopleCount;
     
     const slots = intentRequest.currentIntent.slots;
-    console.log("Date - " + date);
-    
-    const validationResult = validateReservation(location, date, time);
+    console.log("Input Date String : " + date);
+    console.log("Input Time String - " + time);
+    const validationResult = validateReservation(location, date, time, peopleCount, cuisine);
     if (!validationResult.isValid) {
       console.log("Returning Elicit Slot for Invalid " + validationResult.violatedSlot);
       slots[`${validationResult.violatedSlot}`] = null;
-      if (!validationResult.options) {
-        return Promise.resolve(
-          lexResponses.elicitSlot(
-            intentRequest.sessionAttributes,
-            intentRequest.currentIntent.name,
-            slots,
-            validationResult.violatedSlot,
-            validationResult.message
-            
-          )
-        );
-      }else{
-        return Promise.resolve(
-          lexResponses.elicitSlot(
-            intentRequest.sessionAttributes,
-            intentRequest.currentIntent.name,
-            slots,
-            validationResult.violatedSlot,
-            validationResult.message,
-            validationResult.options.title,
-            validationResult.options.imageUrl,
-            validationResult.options.buttons
-          )
-        );
-        
-      }
+      return Promise.resolve(
+        lexResponses.elicitSlot(
+          intentRequest.sessionAttributes,
+          intentRequest.currentIntent.name,
+          slots,
+          validationResult.violatedSlot,
+          validationResult.message
+          
+        )
+      );
     }
     return Promise.resolve(lexResponses.delegate(intentRequest.sessionAttributes, intentRequest.currentIntent.slots));
     
