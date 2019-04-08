@@ -7,7 +7,6 @@ var https = require('https');
 function getResturants(params){
     console.log("Inside get Resturants");
     const token = "YftPEyyLHK1F-Vrrc-p5xbSIHzqDN8o6UVD9QkNaL7yi6F60i3_uuK00KCcKBNjX19b1KmiLygLiiLobZPG-x3lekJb3drzwnkuri65Y-gxUj2tYa-A-lZDRoVGIW3Yx";
-
     const options = {
         hostname: 'api.yelp.com',
         path: '/v3/businesses/search?' + querystring.stringify(params),
@@ -40,17 +39,17 @@ function getResturants(params){
 
 function formFullfilmentMsg(resturants){
     
-    let fullFilmentMsg = "Here are few suggestions. ";
+    let fullFilmentMsg = "Here are few suggestions - <br>";
 
     resturants.forEach(function (item, index) {
-        let ResturantAddress = `${item.location.display_address[0], item.location.display_address[1]}`
+        let ResturantAddress = `${item.location.display_address[0]}, ${item.location.display_address[1]}`
 
-        fullFilmentMsg += `${index + 1}) ${item.name}, located at ${ResturantAddress} `;
+        fullFilmentMsg += `${index + 1}) <b>${item.name}</b> located at ${ResturantAddress} <br>`;
 
     });
 
 
-    fullFilmentMsg += ". Enjoy your meal!"
+    fullFilmentMsg += "Enjoy your meal!"
 
     return fullFilmentMsg
 }
@@ -60,6 +59,7 @@ module.exports = async function (intentRequest) {
     let time = intentRequest.currentIntent.slots.time;
     let date = intentRequest.currentIntent.slots.date;
     let peopleCount = intentRequest.currentIntent.slots.peopleCount;
+    
     let unixDate = new Date(date + ' ' + time).getTime() / 1000
     
     console.log(date,time);
@@ -76,8 +76,18 @@ module.exports = async function (intentRequest) {
     
     let res = await getResturants(params);
     
-
-    let fullFilmentMsg = formFullfilmentMsg(res["businesses"]);
+    let fullFilmentMsg = "Sorry, we are not able to serve your request right now!"
+    
+    if (res && res["businesses"]) {
+        console.log("res['businesses'].length : " + res["businesses"].length);
+        if(res["businesses"].length > 0){
+            fullFilmentMsg = formFullfilmentMsg(res["businesses"]);
+        }else{
+            fullFilmentMsg = "No Resturants Avaialble for this query!!";
+        }
+       
+    }
+    
 
     return lexResponses.close(intentRequest.sessionAttributes, 'Fulfilled', { contentType: 'PlainText', content: fullFilmentMsg });
 };

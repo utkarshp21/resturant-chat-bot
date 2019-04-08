@@ -1,6 +1,6 @@
 'use strict';
 
-const DiningSuggestions = require('./dinnigSuggestingIntentHandler/dinningSuggestion');
+const DiningSuggestions = require('./DinnigSuggestingIntentHandler/dinningSuggestion');
 const GreetingHandler = require('./GreetingIntentHandler/greetingHandler.js');
 const ThankYouHandler = require('./ThankYouIntentHandler/thankYouHandler.js');
 
