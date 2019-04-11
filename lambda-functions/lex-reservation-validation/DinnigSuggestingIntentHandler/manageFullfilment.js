@@ -1,71 +1,44 @@
  'use strict';
 
 const lexResponses = require('../lexResponses');
-const querystring = require('querystring');
-var https = require('https');
 
-function getResturants(params){
-    console.log("Inside get Resturants");
-    const token = "YftPEyyLHK1F-Vrrc-p5xbSIHzqDN8o6UVD9QkNaL7yi6F60i3_uuK00KCcKBNjX19b1KmiLygLiiLobZPG-x3lekJb3drzwnkuri65Y-gxUj2tYa-A-lZDRoVGIW3Yx";
-    const options = {
-        hostname: 'api.yelp.com',
-        path: '/v3/businesses/search?' + querystring.stringify(params),
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    };
-    return new Promise((resolve, reject) => {
-        
-        
-        https.get(options, (resp) => {
-            console.log("Executing Promise")
-            let data = '';
+const AWS = require('aws-sdk')
+const sqs = new AWS.SQS({ region: 'us-east-1' });
 
-            resp.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            resp.on('end', () => {
-                resolve(JSON.parse(data));
-            });
-
-        }).on("error", (err) => {
-            console.log("Error: " + err.message);
-            reject(err.message);
-        });
-    })
-}
-
-function formFullfilmentMsg(resturants){
+function sendMessageSQS(query, intentRequest){
+    console.log("Inside SQS Send Messages");
     
-    let fullFilmentMsg = "Here are few suggestions - <br>";
+    let params = {
+        MessageBody: JSON.stringify(query),
+        QueueUrl: "https://sqs.us-east-1.amazonaws.com/245491298808/resturantQueue"
+    };
 
-    resturants.forEach(function (item, index) {
-        let ResturantAddress = `${item.location.display_address[0]}, ${item.location.display_address[1]}`
+    return new Promise((resolve, reject) => {  
+        sqs.sendMessage(params, function (err, data) {
+            if (err) {
+                console.log('error:', "Fail Send Message" + err);
+                reject(err.message);
+            } else {
+                console.log('data:', data.MessageId);
+                resolve("success");
+            }
+        }); 
+    })
 
-        fullFilmentMsg += `${index + 1}) <b>${item.name}</b> located at ${ResturantAddress} <br>`;
-
-    });
-
-
-    fullFilmentMsg += "Enjoy your meal!"
-
-    return fullFilmentMsg
 }
 
 module.exports = async function (intentRequest) {
     
     let time = intentRequest.currentIntent.slots.time;
     let date = intentRequest.currentIntent.slots.date;
-    let peopleCount = intentRequest.currentIntent.slots.peopleCount;
+    // let peopleCount = intentRequest.currentIntent.slots.peopleCount;
     
     let unixDate = new Date(date + ' ' + time).getTime() / 1000
     
     console.log(date,time);
     console.log("unixDate", unixDate);
     
-    let params = {
+    let query = {
         term:'restaurants',
         location:intentRequest.currentIntent.slots.location,
         categories: intentRequest.currentIntent.slots.cuisine,
@@ -74,20 +47,15 @@ module.exports = async function (intentRequest) {
         sort_by: 'distance',
     }
     
-    let res = await getResturants(params);
-    
-    let fullFilmentMsg = "Sorry, we are not able to serve your request right now!"
-    
-    if (res && res["businesses"]) {
-        console.log("res['businesses'].length : " + res["businesses"].length);
-        if(res["businesses"].length > 0){
-            fullFilmentMsg = formFullfilmentMsg(res["businesses"]);
-        }else{
-            fullFilmentMsg = "No Resturants Avaialble for this query!!";
-        }
-       
-    }
+    let SQSStatus = await sendMessageSQS(query, intentRequest);
     
 
+    console.log("SQSStatus STTUS:" + SQSStatus); 
+    let fullFilmentMsg = "You will shortly recieve a message, Thank You! :)"
+    
+    if (SQSStatus == "failed") {
+        fullFilmentMsg = "Sorry, we are not able to serve your request right now!"
+    }
+ 
     return lexResponses.close(intentRequest.sessionAttributes, 'Fulfilled', { contentType: 'PlainText', content: fullFilmentMsg });
 };
