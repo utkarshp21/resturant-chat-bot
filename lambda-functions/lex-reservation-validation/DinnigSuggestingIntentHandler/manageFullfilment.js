@@ -6,6 +6,7 @@ const AWS = require('aws-sdk')
 const sqs = new AWS.SQS({ region: 'us-east-1' });
 
 function sendMessageSQS(query, intentRequest){
+    
     console.log("Inside SQS Send Messages");
     
     let params = {
@@ -17,7 +18,7 @@ function sendMessageSQS(query, intentRequest){
         sqs.sendMessage(params, function (err, data) {
             if (err) {
                 console.log('error:', "Fail Send Message" + err);
-                reject(err.message);
+                reject("failed");
             } else {
                 console.log('data:', data.MessageId);
                 resolve("success");
