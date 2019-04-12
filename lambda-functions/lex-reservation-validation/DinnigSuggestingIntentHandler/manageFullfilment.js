@@ -1,4 +1,4 @@
- 'use strict';
+'use strict';
 
 const lexResponses = require('../lexResponses');
 
@@ -6,7 +6,6 @@ const AWS = require('aws-sdk')
 const sqs = new AWS.SQS({ region: 'us-east-1' });
 
 function sendMessageSQS(query, intentRequest){
-    
     console.log("Inside SQS Send Messages");
     
     let params = {
@@ -18,7 +17,7 @@ function sendMessageSQS(query, intentRequest){
         sqs.sendMessage(params, function (err, data) {
             if (err) {
                 console.log('error:', "Fail Send Message" + err);
-                reject("failed");
+                reject(err.message);
             } else {
                 console.log('data:', data.MessageId);
                 resolve("success");
@@ -30,8 +29,9 @@ function sendMessageSQS(query, intentRequest){
 
 module.exports = async function (intentRequest) {
     
-    let time = intentRequest.currentIntent.slots.time;
-    let date = intentRequest.currentIntent.slots.date;
+    let slots = intentRequest.currentIntent.slots;
+    let time = slots.time;
+    let date = slots.date;
     // let peopleCount = intentRequest.currentIntent.slots.peopleCount;
     
     let unixDate = new Date(date + ' ' + time).getTime() / 1000
@@ -41,18 +41,19 @@ module.exports = async function (intentRequest) {
     
     let query = {
         term:'restaurants',
-        location:intentRequest.currentIntent.slots.location,
-        categories: intentRequest.currentIntent.slots.cuisine,
+        location: slots.location,
+        categories: slots.cuisine,
         limit:5,
         open_at: unixDate,
         sort_by: 'distance',
+        email : slots.email,
     }
     
     let SQSStatus = await sendMessageSQS(query, intentRequest);
     
 
     console.log("SQSStatus STTUS:" + SQSStatus); 
-    let fullFilmentMsg = "You will shortly recieve a message, Thank You! :)"
+    let fullFilmentMsg = "You will shortly recieve an e-mail on " + slots.email  + ", Thank You! :)"
     
     if (SQSStatus == "failed") {
         fullFilmentMsg = "Sorry, we are not able to serve your request right now!"
