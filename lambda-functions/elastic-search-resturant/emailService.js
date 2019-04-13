@@ -19,7 +19,8 @@ module.exports.sendEmail = function (email, message, subject) {
             Subject: {
                 Data: subject
             }
-        }        
+        },
+        Source: "aa6911@nyu.edu"        
     };
     var sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(params).promise();
 
