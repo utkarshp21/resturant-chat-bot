@@ -3,6 +3,8 @@
 const consumeSQSMessage = require('./consumeSQS');
 const emailService = require('./emailService');
 const getElasticQueryResponse = require('./elasticQuery');
+const source = "aa6911@nyu.edu"
+const subject = "Your Resturant Suggestions";
 
 module.exports.elastic = async (event, context) => {
   
@@ -16,15 +18,11 @@ module.exports.elastic = async (event, context) => {
     open_at: 1555095600,
     sort_by: 'distance',
     email: 'monsieurutkarsh@gmail.com'
-  }
+  };
 
   let elasticResponse = await getElasticQueryResponse(SQSResponse,event); 
-
-  let email = "ashim.agg93@gmail.com"
-  let message = "hi there"
-  let subject = "some subject"
-  emailService.sendEmail(email, message, subject)
-
+  let message = "hi there";
+  emailService.sendEmail(source, SQSResponse.email, message, subject);
   return {
     statusCode: 200,
     body: JSON.stringify({
