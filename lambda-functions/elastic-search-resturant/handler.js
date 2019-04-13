@@ -20,9 +20,9 @@ module.exports.elastic = async (event, context) => {
 
   let elasticResponse = await getElasticQueryResponse(SQSResponse,event); 
 
-  email = "ashim.agg93@gmail.com"
-  message = "hi there"
-  subject = "some subject"
+  let email = "ashim.agg93@gmail.com"
+  let message = "hi there"
+  let subject = "some subject"
   emailService.sendEmail(email, message, subject)
 
   return {
