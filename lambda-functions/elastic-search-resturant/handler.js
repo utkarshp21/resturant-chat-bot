@@ -1,7 +1,7 @@
 'use strict';
 
 const consumeSQSMessage = require('./consumeSQS');
-
+const emailService = require('./emailService');
 const getElasticQueryResponse = require('./elasticQuery');
 
 module.exports.elastic = async (event, context) => {
@@ -19,6 +19,11 @@ module.exports.elastic = async (event, context) => {
   }
 
   let elasticResponse = await getElasticQueryResponse(SQSResponse,event); 
+
+  email = "ashim.agg93@gmail.com"
+  message = "hi there"
+  subject = "some subject"
+  emailService.sendEmail(email, message, subject)
 
   return {
     statusCode: 200,

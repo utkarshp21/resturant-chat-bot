@@ -12,7 +12,39 @@ const CHOOSE_FUTURE_TIME_MSG = 'Please choose a future time.';
 var SLOTS = Object.freeze({"DATE":"date", "PEOPLE_COUNT":"peopleCount", 
             "TIME":"time", "CUISINE": "cuisine", "LOCATION" : "location"});
             
-var DECIMAL_RADIX = 10;            
+var DECIMAL_RADIX = 10;  
+
+module.exports.validateReservationParams = function (intentRequest) {
+    
+  console.log("Inside DialogCodeHook");
+  var slots = intentRequest.currentIntent.slots;
+  var location = slots.location;
+  var cuisine = slots.cuisine;
+  var time = slots.time;
+  var date = slots.date;
+  var peopleCount = slots.peopleCount;
+  
+  
+  console.log("Input Date String : " + date);
+  console.log("Input Time String - " + time);
+  const validationResult = validateReservation(location, date, time, peopleCount, cuisine);
+  if (!validationResult.isValid) {
+    console.log("Returning Elicit Slot for Invalid " + validationResult.violatedSlot);
+    slots[`${validationResult.violatedSlot}`] = null;
+    return Promise.resolve(
+      lexResponses.elicitSlot(
+        intentRequest.sessionAttributes,
+        intentRequest.currentIntent.name,
+        slots,
+        validationResult.violatedSlot,
+        validationResult.message
+        
+      )
+    );
+  }
+  return Promise.resolve(lexResponses.delegate(intentRequest.sessionAttributes, intentRequest.currentIntent.slots));
+    
+};
 
 function buildValidationResult(isValid, violatedSlot, messageContent ) {
   
@@ -68,6 +100,7 @@ function validateReservation(location, date, time, peopleCount, cuisine) {
 
 function isFutureDate(idate){
   var today = new Date();
+  //convert to EST Time
   today.setHours(today.getHours() - 4);
   today.setHours(0,0,0,0);
   console.log("Today Date : " + today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate());
@@ -79,6 +112,7 @@ function isFutureDate(idate){
 function isFutureTime(idate, time){
   
   var today = new Date();
+  //convert to EST Time
   today.setHours(today.getHours() - 4);
   var todayHours = today.getHours();
   var todayMinutes = today.getMinutes();
@@ -93,34 +127,4 @@ function isFutureTime(idate, time){
   return today.getTime() - idate.getTime() < 0 || todayHours*60 + todayMinutes < hr *60 + min;
 }
 
-module.exports = function (intentRequest) {
-    
-  console.log("Inside DialogCodeHook");
-  var slots = intentRequest.currentIntent.slots;
-  var location = slots.location;
-  var cuisine = slots.cuisine;
-  var time = slots.time;
-  var date = slots.date;
-  var peopleCount = slots.peopleCount;
-  
-  
-  console.log("Input Date String : " + date);
-  console.log("Input Time String - " + time);
-  const validationResult = validateReservation(location, date, time, peopleCount, cuisine);
-  if (!validationResult.isValid) {
-    console.log("Returning Elicit Slot for Invalid " + validationResult.violatedSlot);
-    slots[`${validationResult.violatedSlot}`] = null;
-    return Promise.resolve(
-      lexResponses.elicitSlot(
-        intentRequest.sessionAttributes,
-        intentRequest.currentIntent.name,
-        slots,
-        validationResult.violatedSlot,
-        validationResult.message
-        
-      )
-    );
-  }
-  return Promise.resolve(lexResponses.delegate(intentRequest.sessionAttributes, intentRequest.currentIntent.slots));
-    
-};
+

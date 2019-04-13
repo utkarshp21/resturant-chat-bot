@@ -1,6 +1,6 @@
 'use strict';
 
-const handleDialogHook = require('./manageDialogs');
+const validationService = require('./validationService');
 const handleFulfillmentHook = require('./manageFullfilment');
 
 module.exports = function (intentRequest) {
@@ -9,7 +9,7 @@ module.exports = function (intentRequest) {
     console.log(source);
     
     if (source === 'DialogCodeHook') {
-        return handleDialogHook(intentRequest);
+        return validationService.validateReservationParams(intentRequest);
     }
     if (source === 'FulfillmentCodeHook') {
         return handleFulfillmentHook(intentRequest);
