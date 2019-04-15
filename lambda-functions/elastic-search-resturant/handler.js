@@ -20,7 +20,7 @@ module.exports.elastic = async(event, context) => {
   console.log("Request for Cuisine - " + SQSResponse.categories);
   let elasticResponse = await getElasticQueryResponse(SQSResponse, event);
   // notificationService.sendEmail(source, email, elasticResponse, subject);
-  let response = await emailService.sendSms(elasticResponse, '+19293341581');
+  let response = await notificationService.sendSms(elasticResponse, '+19293341581');
   return {
     statusCode: 200,
     body: JSON.stringify({
