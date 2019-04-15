@@ -48,16 +48,8 @@ module.exports = function (event) {
                     if (err) {
                         reject("delete error");
                     } else {
-                        var email = 'ashim.agg93@gmail.com';
-                        // Create subscribe/email parameters
-                        var params = {
-                          Protocol: 'EMAIL', /* required */
-                          TopicArn: sns_topic_arn, /* required */
-                          Endpoint: email
-                        };
                         
                         // Create promise and SNS service object
-                        
                         resolve(sqsMessage);
                     }
                 });
