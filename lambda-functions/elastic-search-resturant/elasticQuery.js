@@ -15,25 +15,19 @@ function getResturantsId(params) {
     };
 
     return new Promise((resolve, reject) => {
-
         https.get(options, (resp) => {
-            
-
             let data = '';
-            
             resp.on('data', (chunk) => {
-                console.log("printing chunks");
+                // console.log("printing chunks");
                 data += chunk;
             });
             resp.on('end', () => {
                 let ids = JSON.parse(data).hits.hits
-                
                 let response = ids.map(function (elem) {
                     return {
                         "id": {S:elem._id},
                     };
                 });
-
                 resolve(response);
             });
 
@@ -42,37 +36,46 @@ function getResturantsId(params) {
             console.log("Error: " + err.message);
             reject(err.message);
         });
-    })
+    });
 }
 
-function getResturantsDynomo(all_index) {
+function getResturantsDynamo(all_index) {
     
+    console.log("inside getResturantsDynamo");
     let params = {
         "RequestItems": {
             "yelp-restaurants": {
                 "Keys": all_index
             }
         }
-    }
-
-    console.log(params);
-    
-    console.log("inside get resturatnsasd");
-
-    db.batchGetItem(params, function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data);           // successful response
+    };
+    return new Promise((resolve, reject) => {
+        db.batchGetItem(params, function (err, data) {
+            if (err) {
+                console.log(err, err.stack); 
+                reject(err);
+            }
+            else {
+                console.log("Number of Resturants retrieved- " + data['Responses']['yelp-restaurants'].length);
+                resolve(data['Responses']['yelp-restaurants']);
+            }
+        });
     });
   
 }
-module.exports = async function (SQSResponse, event) {
-    console.log("Inside getElasticQueryResponse")
-    
-    let all_index = await getResturantsId(SQSResponse);
-
-    let restaurants = await getResturantsDynomo(all_index);
-
-    console.log(restaurants);
-    console.log("Response from elastic")
-
+function formatResponse(restaurants){
+    let fullFilmentMsg = "Here are few suggestions - <br>";
+    restaurants.forEach(function (item, index) {
+        let ResturantAddress = `${item.location.display_address[0]}, ${item.location.display_address[1]}`;
+        fullFilmentMsg += `${index + 1}) <b>${item.name}</b> located at ${ResturantAddress} <br>`;
+    });
+    fullFilmentMsg += "Enjoy your meal!";
+    return fullFilmentMsg;
 }
+
+module.exports = async function (SQSResponse, event) {
+    let all_index = await getResturantsId(SQSResponse);
+    let restaurants = await getResturantsDynamo(all_index);
+    let formattedResponse = "email content";//formatResponse(restaurants);
+    return formattedResponse;
+};
