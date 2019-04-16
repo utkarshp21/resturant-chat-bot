@@ -22,6 +22,7 @@ module.exports.elastic = async(event, context) => {
   console.log("Request for Cuisine - " + sqsResponse.categories);
   let allIndex = await elasticSearchService.getResturantsIndices(sqsResponse);
   let formattedResponse = await dyanamoDbService.getResturantsDetails(allIndex);
+  console.log("Sending sms[" + formattedResponse + "]");
   // let response = await snsService.sendEmail(source, email, elasticResponse, subject);
   // let response = await snsService.sendSms(elasticResponse, '+19293341581');
   return {

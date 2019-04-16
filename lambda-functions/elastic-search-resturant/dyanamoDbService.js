@@ -4,7 +4,7 @@ const https = require('https');
 const AWS = require('aws-sdk')
 var db = new AWS.DynamoDB();
 
-module.exports.getResturantsDetailsFromDynamo = async function(allIndex) {
+module.exports.getResturantsDetails = async function(allIndex) {
     
     let params = {
         "RequestItems": {
@@ -21,8 +21,8 @@ module.exports.getResturantsDetailsFromDynamo = async function(allIndex) {
             }
             else {
                 console.log("Received " + data['Responses']['yelp-restaurants'].length + " Resturants From DB");
-                restaurants = data['Responses']['yelp-restaurants'];
-                formattedResponse = "message content";//formatResponse(restaurants);
+                let restaurants = data['Responses']['yelp-restaurants'];
+                let formattedResponse = "message content";//formatResponse(restaurants);
                 resolve(formattedResponse);
             }
         });

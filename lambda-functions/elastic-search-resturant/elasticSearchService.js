@@ -4,7 +4,7 @@ const https = require('https');
 const AWS = require('aws-sdk')
 var db = new AWS.DynamoDB();
 
-function getResturantsId(sqsResponse) {
+module.exports.getResturantsIndices = function(sqsResponse) {
     const options = {
         hostname: 'search-restaurants-yegdabho2nnbw7j2k4hkugyo5m.us-east-1.es.amazonaws.com',
         path: '/_search?q=type:' + sqsResponse.categories,
