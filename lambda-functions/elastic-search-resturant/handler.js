@@ -2,7 +2,7 @@
 
 const sqsService = require('./sqsService');
 const snsService = require('./snsService');
-const dyanomoDbService = require('./dyanomoDbService');
+const dyanamoDbService = require('./dyanamoDbService');
 const elasticSearchService = require('./elasticSearchService');
 
 module.exports.elastic = async(event, context) => {
@@ -21,7 +21,7 @@ module.exports.elastic = async(event, context) => {
 
   console.log("Request for Cuisine - " + sqsResponse.categories);
   let allIndex = await elasticSearchService.getResturantsIndices(sqsResponse);
-  let formattedResponse = await dyanomoDbService.getResturantsDetails(allIndex);
+  let formattedResponse = await dyanamoDbService.getResturantsDetails(allIndex);
   // let response = await snsService.sendEmail(source, email, elasticResponse, subject);
   // let response = await snsService.sendSms(elasticResponse, '+19293341581');
   return {
