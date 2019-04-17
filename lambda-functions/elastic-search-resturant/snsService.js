@@ -37,7 +37,7 @@ module.exports.sendSms = function (message, phone_number) {
       Message: message, /* required */
       PhoneNumber: phone_number,
     };
-    
+    console.log("Sending SMS[" + message + "] to " + phone_number);
     // Create promise and SNS service object
     var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
     
