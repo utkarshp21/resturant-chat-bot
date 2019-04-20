@@ -55,7 +55,7 @@ module.exports = async function (intentRequest) {
     
 
     console.log("SQSStatus STTUS:" + SQSStatus); 
-    let fullFilmentMsg = "You will shortly recieve an e-mail on " + slots.email  + ", Thank You! :)"
+    let fullFilmentMsg = "You will shortly recieve a message on " + slots.email  + ", Thank You! :)"
     
     if (SQSStatus == "failed") {
         fullFilmentMsg = "Sorry, we are not able to serve your request right now!"
