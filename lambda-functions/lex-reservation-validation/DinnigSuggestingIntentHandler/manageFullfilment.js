@@ -47,13 +47,15 @@ module.exports = async function (intentRequest) {
         open_at: unixDate,
         sort_by: 'distance',
         email : slots.email,
+        date : slots.date,
+        time : slots.time,
     }
     
     let SQSStatus = await sendMessageSQS(query, intentRequest);
     
 
     console.log("SQSStatus STTUS:" + SQSStatus); 
-    let fullFilmentMsg = "You will shortly recieve a message on " + slots.email  + ", Thank You! :)"
+    let fullFilmentMsg = "You will shortly recieve an e-mail on " + slots.email  + ", Thank You! :)"
     
     if (SQSStatus == "failed") {
         fullFilmentMsg = "Sorry, we are not able to serve your request right now!"
