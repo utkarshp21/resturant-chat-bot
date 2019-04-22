@@ -1,7 +1,9 @@
+'use strict';
 
 const AWS = require('aws-sdk')
 const region = 'us-east-1'
 AWS.config.update({region: region});
+let sns = new AWS.SNS();
 
 module.exports.sendEmail = function (source, email, message, subject) {
     let params = {
@@ -32,21 +34,27 @@ module.exports.sendEmail = function (source, email, message, subject) {
         });
 }
 
-module.exports.sendSms = function (message, phone_number) {
-    var params = {
-      Message: message, /* required */
-      PhoneNumber: phone_number,
+module.exports.sendSms = async function (message, phone_number) {
+
+    let params = {
+        Message: message,
+        MessageStructure: 'string',
+        PhoneNumber: phone_number,
     };
+
     console.log("Sending SMS[" + message + "] to " + phone_number);
-    // Create promise and SNS service object
-    var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
-    
-    // Handle promise's fulfilled/rejected states
-    publishTextPromise.then(
-      function(data) {
-        console.log("MessageID is " + data.MessageId);
-      }).catch(
-        function(err) {
-        console.error(err, err.stack);
-      });
+
+    return new Promise((resolve, reject) => {
+        sns.publish(params, function (err, data) {
+            if (err){
+                console.log(err, err.stack); 
+                reject(err);
+            }
+            else{
+                console.log(data);  
+                resolve(data);
+            }         
+        });
+    });
 }
+
