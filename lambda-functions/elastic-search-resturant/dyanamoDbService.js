@@ -8,7 +8,7 @@ module.exports.getResturantsDetails = async function(allIndex) {
     
     let params = {
         "RequestItems": {
-            "yelp-restaurants": {
+            "yelp-restaurants-maitrey-testing": {
                 "Keys": allIndex
             }
         }

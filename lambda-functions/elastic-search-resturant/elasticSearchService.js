@@ -6,8 +6,8 @@ var db = new AWS.DynamoDB();
 
 module.exports.getResturantsIndices = function(sqsResponse) {
     const options = {
-        hostname: 'search-restaurants-yegdabho2nnbw7j2k4hkugyo5m.us-east-1.es.amazonaws.com',
-        path: '/_search?q=type:' + sqsResponse.categories,
+        hostname: 'search-restaurant-v2-sjuhsujefoh5dxypkpe34gjaym.us-east-1.es.amazonaws.com',
+        path: '/_search?q=cuisine:' + sqsResponse.categories,
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
