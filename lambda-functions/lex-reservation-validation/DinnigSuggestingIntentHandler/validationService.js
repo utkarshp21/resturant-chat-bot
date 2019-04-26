@@ -2,7 +2,7 @@
 const lexResponses = require('../lexResponses');
 
 const all_locations = ["manhattan", "brooklyn", "queens"];
-const all_cuisines = ["chinese", "american", "thai"];
+const all_cuisines = ["chinese", "newamerican", "thai"];
 const max_people_count = 10;
 const min_people_count = 1;
 const EST_TIME_ZONE = "GMT-04:00";
