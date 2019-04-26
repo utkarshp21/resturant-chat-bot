@@ -2,13 +2,14 @@
 
 const https = require('https');
 const AWS = require('aws-sdk')
+const table_name = 'yelp-restaurants-maitrey-testing';
 var db = new AWS.DynamoDB();
 
 module.exports.getResturantsDetails = async function(allIndex) {
     
     let params = {
         "RequestItems": {
-            "yelp-restaurants-maitrey-testing": {
+            [table_name] : {
                 "Keys": allIndex
             }
         }
@@ -20,8 +21,8 @@ module.exports.getResturantsDetails = async function(allIndex) {
                 reject(err);
             }
             else {
-                console.log("Received " + data['Responses']['yelp-restaurants'].length + " Resturants From DB");
-                let restaurants = data['Responses']['yelp-restaurants'];
+                console.log("Received " + data['Responses'][table_name].length + " Resturants From DB");
+                let restaurants = data['Responses'][table_name];
                 resolve(restaurants);
             }
         });
