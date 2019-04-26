@@ -14,6 +14,7 @@ module.exports.getResturantsDetails = async function(allIndex) {
             }
         }
     };
+    let restaurants = [];
     return new Promise((resolve, reject) => {
         db.batchGetItem(params, function (err, data) {
             if (err) {
@@ -21,11 +22,13 @@ module.exports.getResturantsDetails = async function(allIndex) {
                 reject(err);
             }
             else {
-                console.log("Received " + data['Responses'][table_name].length + " Resturants From DB");
-                let restaurants = data['Responses'][table_name];
+                if (data && data['Responses'] && data['Responses'][table_name]){
+                    restaurants = data['Responses'][table_name];
+                }
+                console.log("Received " + restaurants.length + " Resturants From DB");
                 resolve(restaurants);
             }
         });
     });
-}
+};
 

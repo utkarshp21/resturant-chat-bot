@@ -12,10 +12,13 @@ module.exports.elastic = async(event, context) => {
 
   console.log("Request for Cuisine - " + sqsResponse.categories);
   let allIndex = await elasticSearchService.getResturantsIndices(sqsResponse);
-  let restaurants = await dyanamoDbService.getResturantsDetails(allIndex);
-  
-  let formattedResponse = formatMessage.format(restaurants.slice(0,5), sqsResponse);
-  
+  let formattedResponse = "Sorry to say that we do not have any recommendations for your query.";
+  if (allIndex.length != 0) { 
+    let restaurants = await dyanamoDbService.getResturantsDetails(allIndex);
+    if (restaurants.length != 0){
+      formattedResponse = formatMessage.format(restaurants.slice(0,5), sqsResponse);  
+    }
+  }
   let snsResponse = await snsService.sendSms(formattedResponse, sqsResponse.email);
   
   return {

@@ -2,7 +2,6 @@
 
 const https = require('https');
 const AWS = require('aws-sdk')
-var db = new AWS.DynamoDB();
 
 module.exports.getResturantsIndices = function(sqsResponse) {
     const options = {
@@ -22,12 +21,16 @@ module.exports.getResturantsIndices = function(sqsResponse) {
                 data += chunk;
             });
             resp.on('end', () => {
-                let ids = JSON.parse(data).hits.hits
-                let response = ids.map(function (elem) {
-                    return {
-                        "id": {S:elem._id},
-                    };
-                });
+                let parsedData = JSON.parse(data);
+                let response = [];
+                if (parsedData  && parsedData.hits && parsedData.hits.hits){
+                    let ids = parsedData.hits.hits;
+                    response = ids.map(function (elem) {
+                        return {
+                            "id": {S:elem._id},
+                        };
+                    });
+                }
                 console.log("Received " + response.length + " ES indices");
                 resolve(response);
             });
